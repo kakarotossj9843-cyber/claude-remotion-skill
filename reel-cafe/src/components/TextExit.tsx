@@ -11,7 +11,7 @@ export const TextExit: React.FC<{
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const len = Math.round(fps * theme.timing.exit);
-  const end = duration - Math.round(fps * theme.timing.overlap);
+  const end = duration - Math.round(fps * theme.timing.pourRise * 0.6);
   const p = interpolate(frame, [end - len, end], [0, 1], { ...clamp, easing: theme.ease.in });
   return (
     <AbsoluteFill

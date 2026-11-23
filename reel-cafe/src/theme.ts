@@ -12,6 +12,11 @@ export const theme = {
     textDim: "#CDBBA5",
     scrim: "rgba(18, 11, 6, 0.86)",
     glow: "rgba(232, 163, 61, 0.45)",
+    // Transición "vertido de café"
+    coffee: "#24150C",
+    coffeeMid: "#5A3520",
+    crema: "#C98F55",
+    cremaLight: "#EBC08C",
   },
   fonts: {
     display: "Fraunces",
@@ -29,10 +34,13 @@ export const theme = {
   },
   // Duraciones en segundos; se convierten a frames con fps.
   timing: {
-    total: 10,
-    scene: 10 / 3,
-    overlap: 0.2,
-    exit: 0.35,
+    bpm: 90,
+    // Duración de cada escena en beats (90 BPM => 1 beat = 0.667 s). Total 45 beats = 30 s.
+    sceneBeats: [5, 8, 9, 7, 7, 9],
+    pourRise: 0.45, // s antes del corte: el café sube y cubre
+    pourDrain: 0.45, // s después del corte: el café se drena
+    voLead: 0.35, // s tras el corte en que arranca la voz
+    exit: 0.33,
   },
 } as const;
 
