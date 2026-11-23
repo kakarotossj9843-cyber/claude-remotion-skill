@@ -2,11 +2,11 @@
   "name": "reel-cafe-especialidad",
   "version": "1.0.0",
   "private": true,
-  "description": "Reel 9:16 de 10 s sobre café de especialidad (skill remotion-motion-graphics)",
+  "description": "Reel 9:16 de 30 s sobre café de especialidad (skill remotion-motion-graphics)",
   "scripts": {
     "audio": "node scripts/gen-audio.mjs",
     "studio": "remotion studio src/index.ts",
-    "render": "remotion render src/index.ts ReelCafe out/reel-cafe.mp4 --codec h264 --crf 16"
+    "render": "remotion render src/index.ts ReelCafe out/reel-cafe-30s.mp4 --codec h264 --crf 16"
   },
   "dependencies": {
     "@fontsource/fraunces": "^5.0.0",
