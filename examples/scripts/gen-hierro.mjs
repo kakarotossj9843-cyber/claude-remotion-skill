@@ -34,7 +34,7 @@ add(0, 41.5, (ts) => {
 for (const [f, d, p] of [[1760, 0, -0.4], [2637, 0.07, 0.4], [3520, 0.14, 0]])
   add(0.1 + d, 3, (ts, q) => Math.sin(TAU * f * ts) * Math.exp(-q * 5) * 0.05, p);
 // 3. star rumble 4.5–10.35 (one-pole low-passed noise, rising)
-{ let y = 0; add(4.5, 5.85, (ts, p) => { y += 0.02 * (rnd() * 2 - y); return y * 3.2 * Math.min(1, ts / 1.5) * (0.4 + p * 0.9); }); }
+{ let y = 0; add(4.5, 5.85, (ts, p) => { y += 0.09 * (rnd() * 2 - y); return y * 1.3 * Math.min(1, ts / 1.5) * (0.4 + p * 0.9); }); }
 // riser into the collapse
 add(8.4, 1.95, (ts, p) => (Math.sin(TAU * (200 + 900 * p * p) * ts) * 0.05 + rnd() * 0.25 * p) * p * p);
 // 4. SUPERNOVA at 10.5
@@ -60,8 +60,11 @@ for (const [t, f] of [[21.13, 220], [23.13, 261.63], [25.13, 329.63]]) {
 const beat = 60 / 72;
 for (let k = 0; 27 + k * beat < 42.2; k++) {
   const t = 27 + k * beat, g = t > 40.5 ? Math.max(0, (42.2 - t) / 1.7) : 1;
-  add(t, 0.22, (ts, p) => Math.sin(TAU * (62 - 20 * p) * ts) * Math.exp(-p * 6) * 0.85 * g);
-  add(t + 0.2, 0.18, (ts, p) => Math.sin(TAU * (74 - 22 * p) * ts) * Math.exp(-p * 7) * 0.55 * g);
+  const thud = (f0, a) => (ts, p) => { const f = f0 - 0.3 * f0 * p;
+    return (Math.sin(TAU * f * ts) + 0.6 * Math.sin(TAU * 2 * f * ts) + 0.35 * Math.sin(TAU * 3 * f * ts)) * Math.exp(-p * 7) * a * g; };
+  add(t, 0.22, thud(62, 0.6));
+  add(t + 0.2, 0.18, thud(74, 0.38));
+  add(t, 0.03, (ts, p) => rnd() * (1 - p) * 0.18 * g);
 }
 // 8. end: swell at 36, bloom on title at 40
 for (const [f, pan] of [[146.83, -0.4], [220, 0.4], [293.66, 0]])
@@ -69,6 +72,25 @@ for (const [f, pan] of [[146.83, -0.4], [220, 0.4], [293.66, 0]])
 add(39.95, 3, (ts, p) => Math.sin(TAU * 36.7 * ts) * Math.exp(-p * 2.5) * 0.6);
 for (const [f, d, pan] of [[1174.7, 0, -0.5], [1760, 0.08, 0.5], [2349.3, 0.16, 0], [2637, 0.24, 0.2]])
   add(40 + d, 3, (ts, p) => Math.sin(TAU * f * ts) * Math.exp(-p * 3.5) * 0.04, pan);
+
+// 9. mid-register piano motif (audible on phone speakers)
+const piano = (t, f, a = 0.07, pan = 0) => add(t, 2.6, (ts, p) =>
+  (Math.sin(TAU * f * ts) + 0.45 * Math.sin(TAU * 2 * f * ts) + 0.18 * Math.sin(TAU * 3.01 * f * ts)) *
+  Math.min(1, ts * 300) * Math.exp(-p * 4.2) * a, pan);
+const D4 = 293.66, F4 = 349.23, A4 = 440, C5 = 523.25, E5 = 659.25, D5 = 587.33, A3 = 220, G4 = 392, Bb3 = 233.08;
+const motif = [[0.6, D4], [1.8, A4], [3.0, F4], [4.6, A3], [5.8, D4], [7.0, F4], [8.2, E5 / 2]];
+for (const [t, f] of motif) piano(t, f, 0.06, (rnd()) * 0.8);
+for (const [t, f] of [[15.3, D5], [16.5, A4], [17.7, F4], [18.9, C5], [20.1, A4]]) piano(t, f, 0.055, rnd() * 0.8);
+for (const [t, f] of [[27.4, D4], [29.0, F4], [30.7, A4], [32.3, G4], [34.0, F4], [35.6, E5 / 2]]) piano(t, f, 0.05, rnd() * 0.8);
+for (const [t, f] of [[36.2, Bb3], [37.4, D4], [38.6, F4], [40.0, A4], [40.0, D4], [40.0, D5]]) piano(t, f, 0.065, rnd() * 0.8);
+// warm mid pad under everything (D minor), follows the scene dynamics
+for (const [f, pan] of [[293.66, -0.4], [349.23, 0.4], [440, 0]])
+  add(0.3, 41, (ts) => {
+    const lvl = ts < 10.5 ? 0.6 : ts < 15 ? 0.25 : ts < 27 ? 0.8 : ts < 36 ? 0.5 : 0.9;
+    return (Math.sin(TAU * f * ts) + Math.sin(TAU * f * 1.006 * ts)) * 0.012 * lvl * env(ts, 3, 3, 41);
+  }, pan);
+// supernova mid crack
+add(10.48, 0.6, (ts, p) => (Math.sin(TAU * 180 * ts) + Math.sin(TAU * 271 * ts)) * Math.exp(-p * 6) * 0.25);
 
 // cheap stereo reverb: parallel combs
 const verb = (x, delays) => {
@@ -90,5 +112,5 @@ for (let i = 0; i < N; i++) {
   buf.writeInt16LE(Math.round(Math.max(-1, Math.min(1, sat(L[i]))) * 32767), 44 + i * 4);
   buf.writeInt16LE(Math.round(Math.max(-1, Math.min(1, sat(R[i]))) * 32767), 46 + i * 4);
 }
-writeFileSync(join(OUT, "hierro.wav"), buf);
-console.log("hierro.wav written, peak", peak.toFixed(2));
+writeFileSync(join(OUT, "hierro_music.wav"), buf);
+console.log("hierro_music.wav written, peak", peak.toFixed(2));
