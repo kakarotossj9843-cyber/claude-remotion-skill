@@ -4,6 +4,7 @@ Four videos built with the remotion-motion-graphics skill, in one Remotion proje
 
 | Composition | What it is |
 |---|---|
+| `Hierro` | 43s short film: the biography of one iron atom in your blood — forged in a dying star, blasted out by a supernova, rock, ocean, leaf, and now your pulse. Everything drawn in code; original score with a 72 BPM heartbeat (`scripts/gen-hierro.mjs`) |
 | `HaidrrrryPromo` | 12s profile promo: spark logo sting, word reveals, staggered cards, glow CTA |
 | `FocusCatPromo` | 15.5s app promo: pixel-art mascot drawn in code (2-frame walk cycle), animated focus ring, synthesized SFX, warm ambient pad |
 | `SelfFix` | 18.5s "watch this video fix itself": one scene opens deliberately bad (linear easing, flat background, no stagger, no grade) and upgrades live as each rule stamps in |
